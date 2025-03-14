@@ -17,7 +17,8 @@ public class main  {
         int totalTime = 5000;   // total # time steps of simulation
 
 
-        ExampleNSCLC.Simulate(totalTime, modifier, headless, TOTAL_SIMS, save_max_gifs, OVERWRITE);
+//        ExampleNSCLC.Simulate(totalTime, modifier, headless, TOTAL_SIMS, save_max_gifs, OVERWRITE);
+        Grid_Broad.Simulate(totalTime, modifier, headless, TOTAL_SIMS, save_max_gifs, OVERWRITE);
 
         return;
     }
