@@ -1,15 +1,16 @@
-package GattacaExample;
+package NSCLC;
 
 import HAL.GridsAndAgents.AgentGrid2D;
 import HAL.Gui.*;
 import HAL.Rand;
+import HAL.Tools.PhylogenyTracker.Genome;
 import HAL.Util;
 
 import static HAL.Util.*;
 
 import java.io.File;
 
-class NSCLC_Parameters2D {
+class Grid_Parameters2D {
     public double BIRTH_RATE = 0.1;
     public double DEATH_RATE = 0.05;
     public int sideLen = 100;
@@ -17,13 +18,13 @@ class NSCLC_Parameters2D {
     public double IGNORE_CLONES_BELOW_FRACTION = 0.0; // (this is dependent on domain size)
     public boolean save_clonal_lineage = true;
     public int drawing_scaling_factor = 4;
-    String[] AttributesList = new String[]{"Genome", "H", "S", "V"};//, "Color"};
+    String[] AttributesList = new String[]{"Genome", "H", "S", "V", "Color"};//, "Color"};
 }
 
-public class ExampleNSCLC extends AgentGrid2D<NSCLCCell> {
+public class Grid_Broad extends AgentGrid2D<NSCLCCell> {
 
     // tracking variables
-    static final NSCLC_Parameters2D params = new NSCLC_Parameters2D();
+    static final Grid_Parameters2D params = new Grid_Parameters2D();
 
     // neighborhoods
     int[]neighborhood=MooreHood(false);
@@ -31,9 +32,12 @@ public class ExampleNSCLC extends AgentGrid2D<NSCLCCell> {
 
     // initial gattaca parent genome
     Gattaca common_ancestor_genome;
+//    Gattaca2 common_ancestor_genome;
+//    Gattaca4 common_ancestor_genome;
+//    Gattaca7 common_ancestor_genome;
+//    Gattaca26 common_ancestor_genome;
 
-
-    ExampleNSCLC(int seed){
+    Grid_Broad(int seed){
         super(params.sideLen,params.sideLen, NSCLCCell.class,false,false);
 
         rn = new Rand(seed);
@@ -86,8 +90,8 @@ public class ExampleNSCLC extends AgentGrid2D<NSCLCCell> {
             if ((success) || OVERWRITE) {
 
 
-                ExampleNSCLC model = new ExampleNSCLC(seed);
-                NSCLC_Parameters2D p = model.params;
+                Grid_Broad model = new Grid_Broad(seed);
+                Grid_Parameters2D p = model.params;
                 int delete_thresh = (int) (p.sideLen * p.sideLen * p.IGNORE_CLONES_BELOW_FRACTION);
 
                 // VISUALIZE
@@ -140,26 +144,26 @@ public class ExampleNSCLC extends AgentGrid2D<NSCLCCell> {
         return;
     }
 
+public static void Draw(Grid_Broad model, UIGrid visCells, int time) {
 
-    public static void Draw(ExampleNSCLC model, UIGrid visCells, int time) {
+    // color half by drivers and half by passengers
+    for (int x = 0; x < model.params.sideLen; x++) {
+        for (int y = 0; y < model.params.sideLen; y++) {
 
-        // color half by drivers and half by passengers
-        for (int x = 0; x < model.params.sideLen; x++) {
-            for (int y = 0; y < model.params.sideLen; y++) {
+            NSCLCCell c = model.GetAgent(x,y);
 
-                NSCLCCell c = model.GetAgent(x,y);
 
-                if (c== null) {
-                    visCells.SetPix(x + 2,y + 2, Util.WHITE);
-                } else {
-                    visCells.SetPix(x + 2,y + 2,HSBColor(c.genome.h,c.genome.v,c.genome.s));
-                }
+            if (c== null) {
+                visCells.SetPix(x + 2,y + 2, Util.WHITE);
+            } else {
+                visCells.SetPix(x + 2,y + 2,HSBColor(c.genome.h,c.genome.v,c.genome.s));
             }
         }
+    }
 
 //        visCells.SetString(Integer.toString((int) time), true, BLACK, WHITE, 2);
 
-    }
+}
 
     /*
 
@@ -170,8 +174,6 @@ public class ExampleNSCLC extends AgentGrid2D<NSCLCCell> {
 
     // Function to retrieve the attributes of your choice.
     public static String GetAttributes(Gattaca root) {
-//        System.out.println(Hex(HSBColor(root.h,root.v,root.s)));
-//        return root.PrivateGenome + "," + Double.toString(root.h) + "," + Double.toString(root.s)+ "," + Double.toString(root.v) + "," + Hex(HSBColor(root.h,root.v,root.s));
         return root.PrivateGenome + "," + Double.toString(root.h) + "," + Double.toString(root.s)+ "," + Double.toString(root.v);
 
     }

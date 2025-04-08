@@ -12,7 +12,7 @@ public class GattacaExample  {
         System.setProperty("java.awt.headless", headless ? "true" : "false");
 
         int TOTAL_SIMS = 4;
-        int  save_max_gifs = TOTAL_SIMS; // only save gifs of first n sims (to save space)
+        int  save_max_gifs = -1; // only save gifs of first n sims (to save space)
         int modifier = 50;      // when to save data
         int totalTime = 3000;   // total # time steps of simulation
 

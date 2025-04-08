@@ -1,7 +1,7 @@
-package GattacaExample;
+package NSCLC;
 
 import HAL.GridsAndAgents.AgentSQ2Dunstackable;
-class NSCLCCell extends AgentSQ2Dunstackable<ExampleNSCLC> {
+class NSCLCCell extends AgentSQ2Dunstackable<Grid_Broad> {
 
     // each cell carries its own GattacaExample.Gattaca genome:
     Gattaca genome;

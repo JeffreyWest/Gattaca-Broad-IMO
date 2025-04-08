@@ -72,7 +72,7 @@ public class ExampleModel2d extends AgentGrid2D<Cell2D> {
 
     public static void Square(int totalTime, int modifier, boolean headless, int sims, int save_max, boolean OVERWRITE) {
 
-        String masterfoldername = "./NSCLC/2d/";
+        String masterfoldername = "./";
         File dir = new File(masterfoldername);
         dir.mkdir();
 

@@ -1,16 +1,15 @@
-package GattacaExample;
+package NSCLC;
 
 import HAL.GridsAndAgents.AgentGrid2D;
 import HAL.Gui.*;
 import HAL.Rand;
-import HAL.Tools.PhylogenyTracker.Genome;
 import HAL.Util;
 
 import static HAL.Util.*;
 
 import java.io.File;
 
-class Grid_Parameters2D {
+class NSCLC_Parameters2D {
     public double BIRTH_RATE = 0.1;
     public double DEATH_RATE = 0.05;
     public int sideLen = 100;
@@ -18,38 +17,35 @@ class Grid_Parameters2D {
     public double IGNORE_CLONES_BELOW_FRACTION = 0.0; // (this is dependent on domain size)
     public boolean save_clonal_lineage = true;
     public int drawing_scaling_factor = 4;
-    String[] AttributesList = new String[]{"Genome", "H", "S", "V", "Color"};//, "Color"};
+    String[] AttributesList = new String[]{"Genome", "H", "S", "V"};//, "Color"};
 }
 
-public class Grid_Broad extends AgentGrid2D<Cell> {
+public class ExampleNSCLC extends AgentGrid2D<NSCLCCell> {
 
     // tracking variables
-    static final Grid_Parameters2D params = new Grid_Parameters2D();
+    static final NSCLC_Parameters2D params = new NSCLC_Parameters2D();
 
     // neighborhoods
     int[]neighborhood=MooreHood(false);
     Rand rn;
 
     // initial gattaca parent genome
-    Gattaca1 common_ancestor_genome;
-//    Gattaca2 common_ancestor_genome;
-//    Gattaca4 common_ancestor_genome;
-//    Gattaca7 common_ancestor_genome;
-//    Gattaca26 common_ancestor_genome;
+    Gattaca common_ancestor_genome;
 
-    Grid_Broad(int seed){
-        super(params.sideLen,params.sideLen, Cell.class,false,false);
+
+    ExampleNSCLC(int seed){
+        super(params.sideLen,params.sideLen, NSCLCCell.class,false,false);
 
         rn = new Rand(seed);
 
-        common_ancestor_genome = new Gattaca1(null, "", 0.0, 0.0, 0.5, rn);
-        Gattaca1 clone1=new Gattaca1(common_ancestor_genome, "",0.0, 0.0, 0.5, rn);
+        common_ancestor_genome = new Gattaca(null, "", 0.0, 0.0, 0.5, rn);
+        Gattaca clone1=new Gattaca(common_ancestor_genome, "",0.0, 0.0, 0.5, rn);
 
         int cells = 0;
         while (cells < params.n0) {
             // random location
             int cell_id = rn.Int(this.length);
-            Cell c  = this.GetAgent(cell_id);
+            NSCLCCell c  = this.GetAgent(cell_id);
             if (c==null) {
                 NewAgentSQ(cell_id).Init(clone1);
                 cells++;
@@ -60,7 +56,7 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
 
     // Step function for PD model ("steps" all cells through birth/death/mutation)
     void OriginalStep(){
-        for (Cell c:this) {
+        for (NSCLCCell c:this) {
             c.Step();
         }
         CleanShuffle(rn);
@@ -90,8 +86,8 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
             if ((success) || OVERWRITE) {
 
 
-                Grid_Broad model = new Grid_Broad(seed);
-                Grid_Parameters2D p = model.params;
+                ExampleNSCLC model = new ExampleNSCLC(seed);
+                NSCLC_Parameters2D p = model.params;
                 int delete_thresh = (int) (p.sideLen * p.sideLen * p.IGNORE_CLONES_BELOW_FRACTION);
 
                 // VISUALIZE
@@ -125,7 +121,7 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
                 // save clonal information in EvoFreq format:
                 if (p.save_clonal_lineage) {
                     if (seed < save_max) {
-                        model.common_ancestor_genome.OutputClonesToCSV(foldername + "gattaca_output"+seed+".csv", p.AttributesList, (Gattaca1 g) -> {
+                        model.common_ancestor_genome.OutputClonesToCSV(foldername + "gattaca_output"+seed+".csv", p.AttributesList, (Gattaca g) -> {
                             return GetAttributes(g);
                         }, delete_thresh);
                     }
@@ -145,44 +141,25 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
     }
 
 
-//    public static void Draw(Grid_Broad model, UIGrid visCells, int time) {
-//
-//        // color half by drivers and half by passengers
-//        for (int x = 0; x < model.params.sideLen; x++) {
-//            for (int y = 0; y < model.params.sideLen; y++) {
-//
-//                Cell c = model.GetAgent(x,y);
-//
-//                if (c== null) {
-//                    visCells.SetPix(x + 2,y + 2, Util.WHITE);
-//                } else {
-//                    visCells.SetPix(x + 2,y + 2,HSBColor(c.genome.h,c.genome.v,c.genome.s));
-//                }
-//            }
-//        }
-//
-////        visCells.SetString(Integer.toString((int) time), true, BLACK, WHITE, 2);
-//
-//    }
-public static void Draw(Grid_Broad model, UIGrid visCells, int time) {
+    public static void Draw(ExampleNSCLC model, UIGrid visCells, int time) {
 
-    // color half by drivers and half by passengers
-    for (int x = 0; x < model.params.sideLen; x++) {
-        for (int y = 0; y < model.params.sideLen; y++) {
+        // color half by drivers and half by passengers
+        for (int x = 0; x < model.params.sideLen; x++) {
+            for (int y = 0; y < model.params.sideLen; y++) {
 
-            Cell c = model.GetAgent(x,y);
+                NSCLCCell c = model.GetAgent(x,y);
 
-            if (c== null) {
-                visCells.SetPix(x + 2,y + 2, Util.WHITE);
-            } else {
-                visCells.SetPix(x + 2,y + 2,HSBColor(c.genome.h,c.genome.v,c.genome.s));
+                if (c== null) {
+                    visCells.SetPix(x + 2,y + 2, Util.WHITE);
+                } else {
+                    visCells.SetPix(x + 2,y + 2,HSBColor(c.genome.h,c.genome.v,c.genome.s));
+                }
             }
         }
-    }
 
 //        visCells.SetString(Integer.toString((int) time), true, BLACK, WHITE, 2);
 
-}
+    }
 
     /*
 
@@ -192,13 +169,7 @@ public static void Draw(Grid_Broad model, UIGrid visCells, int time) {
      */
 
     // Function to retrieve the attributes of your choice.
-//    public static String GetAttributes(Gattaca1 root) {
-////        System.out.println(Hex(HSBColor(root.h,root.v,root.s)));
-//        return root.PrivateGenome + "," + Double.toString(root.h) + "," + Double.toString(root.s)+ "," + Double.toString(root.v) + "," + Hex(HSBColor(root.h,root.v,root.s));
-////        return root.PrivateGenome + "," + Double.toString(root.h) + "," + Double.toString(root.s)+ "," + Double.toString(root.v);
-//
-//    }
-    public static String GetAttributes(Gattaca1 root) {
+    public static String GetAttributes(Gattaca root) {
 //        System.out.println(Hex(HSBColor(root.h,root.v,root.s)));
 //        return root.PrivateGenome + "," + Double.toString(root.h) + "," + Double.toString(root.s)+ "," + Double.toString(root.v) + "," + Hex(HSBColor(root.h,root.v,root.s));
         return root.PrivateGenome + "," + Double.toString(root.h) + "," + Double.toString(root.s)+ "," + Double.toString(root.v);
