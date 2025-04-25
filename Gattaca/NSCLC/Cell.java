@@ -60,16 +60,45 @@ class Cell extends AgentSQ2Dunstackable<Grid_Broad> {
     // each cell carries its own GattacaExample.Gattaca genome:
 //    Gattaca1 genome;
 //    Genome genome;
-    Genome genome;
+//    Genome genome;
 
-
-    Cell Init(Genome self_genome){
-        genome = self_genome;
-        if (G.params.save_clonal_lineage) {
-            genome.IncPop();
+    Gattaca1 genome1 = null;
+    Gattaca2 genome2 = null;
+    Gattaca4 genome4 = null;
+    Gattaca7 genome7 = null;
+    Gattaca26 genome26 = null;
+//    Cell Init(Genome self_genome){
+//        genome = self_genome;
+//        if (G.params.save_clonal_lineage) {
+//            genome.IncPop();
+//        }
+//        return this;
+//    }
+Cell Init(Gattaca1 g1, Gattaca2 g2, Gattaca4 g4, Gattaca7 g7, Gattaca26 g26){
+    genome1 = g1;
+    genome2 = g2;
+    genome4 = g4;
+    genome7 = g7;
+    genome26 = g26;
+    if (G.params.save_clonal_lineage) {
+        if(g1!=null) {
+            g1.IncPop();
         }
-        return this;
+        if(g2!=null) {
+            g2.IncPop();
+        }
+        if(g4!=null) {
+            g4.IncPop();
+        }
+        if(g7!=null) {
+            g7.IncPop();
+        }
+        if(g26!=null) {
+            g26.IncPop();
+        }
     }
+    return this;
+}
 
 //    Cell Init(Gattaca1 self_genome){
 //        genome = self_genome;
@@ -78,25 +107,40 @@ class Cell extends AgentSQ2Dunstackable<Grid_Broad> {
 //        }
 //        return this;
 //    }
-Cell Divide(){
-    int nDivOptions = G.MapEmptyHood(G.neighborhood,Xsq(),Ysq());
-    if(nDivOptions==0){ return null; }
-    int nextAgentID = G.neighborhood[G.rn.Int(nDivOptions)];
-
-    Genome g;
-
-    if (genome instanceof Gattaca1) {
-        g = ((Gattaca1) genome)._RunPossibleMutation(G.GetTick());
-    } else if (genome instanceof Gattaca2) {
-        g = ((Gattaca2) genome)._RunPossibleMutation(G.GetTick());
-    } else {
-        throw new RuntimeException("Unknown genome type in Cell.Divide()");
+Cell Divide() {
+    int nDivOptions = G.MapEmptyHood(G.neighborhood, Xsq(), Ysq());
+    if (nDivOptions == 0) {
+        return null;
     }
-
-    Cell c = G.NewAgentSQ(nextAgentID).Init(g);
-
-    return c;
+    int nextAgentID = G.neighborhood[G.rn.Int(nDivOptions)];
+    if (genome1 != null) {
+        Gattaca1 g = genome1._RunPossibleMutation(G.GetTick());
+        Cell c = G.NewAgentSQ(nextAgentID).Init(g, null, null, null, null);
+        return c;
+    }
+    if (genome2 != null) {
+        Gattaca2 g = genome2._RunPossibleMutation(G.GetTick());
+        Cell c = G.NewAgentSQ(nextAgentID).Init(null, g, null, null, null);
+        return c;
+    }
+    if (genome4 != null) {
+        Gattaca4 g = genome4._RunPossibleMutation(G.GetTick());
+        Cell c = G.NewAgentSQ(nextAgentID).Init(null, null, g, null, null);
+        return c;
+    }
+    if (genome7 != null) {
+        Gattaca7 g =  genome7._RunPossibleMutation(G.GetTick());
+        Cell c = G.NewAgentSQ(nextAgentID).Init(null, null, null, g, null);
+        return c;
+    }
+    if (genome26 != null) {
+        Gattaca26 g = genome26._RunPossibleMutation(G.GetTick());
+        Cell c = G.NewAgentSQ(nextAgentID).Init(null, null, null, null, g);
+        return c;
+    }
+    return null;
 }
+
 //    Cell Divide(){
 //        int nDivOptions = G.MapEmptyHood(G.neighborhood,Xsq(),Ysq());
 //        if(nDivOptions==0){ return null; }
@@ -109,7 +153,26 @@ Cell Divide(){
 //        return c;
 //    }
 void Death() {
-    if (G.params.save_clonal_lineage) { genome.DecPop(); }
+    if (G.params.save_clonal_lineage) {
+        if(genome1!=null) {
+            genome1.DecPop();
+        }
+        if(genome2!=null) {
+            genome2.DecPop();
+        }
+        if(genome4!=null) {
+            genome4.DecPop();
+        }
+        if(genome7!=null) {
+            genome7.DecPop();
+        }
+        if(genome26!=null) {
+            genome26.DecPop();
+        }
+
+
+//        genome.DecPop();
+    }
     Dispose();
 }
 
