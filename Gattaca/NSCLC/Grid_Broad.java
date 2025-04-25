@@ -18,7 +18,7 @@ class Grid_Parameters2D {
     public double IGNORE_CLONES_BELOW_FRACTION = 0.0; // (this is dependent on domain size)
     public boolean save_clonal_lineage = true;
     public int drawing_scaling_factor = 4;
-    String[] AttributesList = new String[]{"Genome", "H", "S", "V"};//, "Color"};
+    String[] AttributesList = new String[]{"Genome", "H", "S", "V", "Color"};//, "Color"};
 }
 
 public class Grid_Broad extends AgentGrid2D<Cell> {
@@ -63,17 +63,13 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
             int cell_id = rn.Int(this.length);
             Cell c  = this.GetAgent(cell_id);
             if (c == null) {
-                 if( (cells % 2 == 0)) {
+                Genome g = (cells % 2 == 0)
 //                        ? new Gattaca1(commonAncestor1, "", 0.0, 0.0, 0.5, rn)
 //                        : new Gattaca2(commonAncestor2, "", 0.7, 0.8, 0.5, rn);
-                     NewAgentSQ(cell_id).Init(new Gattaca1(clone1, "", 0.0, 0.0, 0.5, rn), null);
-                 }
-                     else {
-                     NewAgentSQ(cell_id).Init(null, new Gattaca2(clone2, "", 0.7, 0.8, 0.5, rn));
-                 }
-//                NewAgentSQ(cell_id).Init(g);
-                     cells++;
-
+                        ? new Gattaca1(clone1, "", 0.0, 0.0, 0.5, rn)
+                        : new Gattaca2(clone2, "", 0.7, 0.8, 0.5, rn);
+                NewAgentSQ(cell_id).Init(g);
+                cells++;
             }
         }
 //        int count1 = 0, count2 = 0;
@@ -122,6 +118,12 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
                 int delete_thresh = 0;//(int) (p.sideLen * p.sideLen * p.IGNORE_CLONES_BELOW_FRACTION);
 
                 // VISUALIZE
+//                int vis_dim = p.sideLen + 4;
+//                UIGrid Vis = new UIGrid(vis_dim, vis_dim, p.drawing_scaling_factor);
+//                UIWindow win = (seed < save_max) ? CreateWindow(headless, Vis) : null;
+//                GifMaker smallGif = (seed < save_max) ? new GifMaker(foldername + "sim"+seed+".gif", 100, true) : null;
+
+                // VISUALIZE
                 int vis_dim = p.sideLen + 4;
                 UIGrid Vis1 = new UIGrid(vis_dim, vis_dim, p.drawing_scaling_factor); // Gattaca1
                 UIGrid Vis2 = new UIGrid(vis_dim, vis_dim, p.drawing_scaling_factor); // Gattaca2
@@ -160,25 +162,25 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
                 }
                 if (p.save_clonal_lineage) {
                     if (seed < save_max) {
-//                        Gattaca1 temp_clone = (Gattaca1) model.common_ancestor1;
-//
-//                        System.out.println(temp_clone.GetNumGenomes());
-//                        temp_clone.OutputClonesToCSV(foldername + "gattaca1_output"+seed+".csv", p.AttributesList, (Gattaca1 g) -> {
-//                            return GetAttributes(g);
-//                        }, delete_thresh);
-                        model.common_ancestor1.OutputClonesToCSV(
-                                foldername + "gattaca1_output" + seed + ".csv",
-                                p.AttributesList,
-                                (Gattaca1 g) -> GetAttributes(g),
-                                delete_thresh
-                        );
+                        Gattaca1 temp_clone = (Gattaca1) model.common_ancestor1;
 
-                        model.common_ancestor2.OutputClonesToCSV(
-                                foldername + "gattaca2_output" + seed + ".csv",
-                                p.AttributesList,
-                                (Gattaca2 g) -> {return GetAttributes(g);},
-                                delete_thresh
-                        );
+                        System.out.println(temp_clone.GetNumGenomes());
+                        temp_clone.OutputClonesToCSV(foldername + "gattaca1_output"+seed+".csv", p.AttributesList, (Gattaca1 g) -> {
+                            return GetAttributes(g);
+                        }, delete_thresh);
+//                        model.common_ancestor1.OutputClonesToCSV(
+//                                foldername + "gattaca1_output" + seed + ".csv",
+//                                p.AttributesList,
+//                                (Gattaca1 g) -> GetAttributes(g),
+//                                delete_thresh
+//                        );
+
+//                        model.common_ancestor2.OutputClonesToCSV(
+//                                foldername + "gattaca2_output" + seed + ".csv",
+//                                p.AttributesList,
+//                                (Gattaca2 g) -> GetAttributes(g),
+//                                delete_thresh
+//                        );
                     }
                 }
 
@@ -251,26 +253,26 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
 ////        visCells.SetString(Integer.toString((int) time), true, BLACK, WHITE, 2);
 //
 //    }
-//    public static void Draw(Grid_Broad model, UIGrid visCells, int time) {
-//        for (int x = 0; x < model.params.sideLen; x++) {
-//            for (int y = 0; y < model.params.sideLen; y++) {
-//                Cell c = model.GetAgent(x, y);
-//                if (c == null) {
-//                    visCells.SetPix(x + 2, y + 2, Util.WHITE);
-//                } else {
-//                    double h = 0, s = 0, v = 0;
-//
-//                    if (c.genome instanceof Gattaca1 g1) {
-//                        h = g1.h; s = g1.s; v = g1.v;
-//                    } else if (c.genome instanceof Gattaca2 g2) {
-//                        h = g2.h; s = g2.s; v = g2.v;
-//                    }
-//
-//                    visCells.SetPix(x + 2, y + 2, HSBColor(h, v, s));
-//                }
-//            }
-//        }
-//    }
+    public static void Draw(Grid_Broad model, UIGrid visCells, int time) {
+        for (int x = 0; x < model.params.sideLen; x++) {
+            for (int y = 0; y < model.params.sideLen; y++) {
+                Cell c = model.GetAgent(x, y);
+                if (c == null) {
+                    visCells.SetPix(x + 2, y + 2, Util.WHITE);
+                } else {
+                    double h = 0, s = 0, v = 0;
+
+                    if (c.genome instanceof Gattaca1 g1) {
+                        h = g1.h; s = g1.s; v = g1.v;
+                    } else if (c.genome instanceof Gattaca2 g2) {
+                        h = g2.h; s = g2.s; v = g2.v;
+                    }
+
+                    visCells.SetPix(x + 2, y + 2, HSBColor(h, v, s));
+                }
+            }
+        }
+    }
 
     public static void Draw(Grid_Broad model, UIGrid visGattaca1, UIGrid visGattaca2, int time) {
         for (int x = 0; x < model.params.sideLen; x++) {
@@ -281,16 +283,14 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
                 if (c == null) {
                     visGattaca1.SetPix(x + 2, y + 2, Util.WHITE);
                     visGattaca2.SetPix(x + 2, y + 2, Util.WHITE);
-                } else if (c.genome1 != null) {
-//                else if (c.genome instanceof Gattaca1 g1) {
+                } else if (c.genome instanceof Gattaca1 g1) {
                     // Gattaca1: draw in visGattaca1, blank in visGattaca2
-                    int color = HSBColor(c.genome1.h, c.genome1.v, c.genome1.s);
+                    int color = HSBColor(g1.h, g1.v, g1.s);
                     visGattaca1.SetPix(x + 2, y + 2, color);
                     visGattaca2.SetPix(x + 2, y + 2, Util.WHITE);
-                } else if (c.genome2 != null) {
-//                else if (c.genome instanceof Gattaca2 g2) {
+                } else if (c.genome instanceof Gattaca2 g2) {
                     // Gattaca2: draw in visGattaca2, blank in visGattaca1
-                    int color = HSBColor(c.genome2.h, c.genome2.v, c.genome2.s);
+                    int color = HSBColor(g2.h, g2.v, g2.s);
                     visGattaca2.SetPix(x + 2, y + 2, color);
                     visGattaca1.SetPix(x + 2, y + 2, Util.WHITE);
                 }
