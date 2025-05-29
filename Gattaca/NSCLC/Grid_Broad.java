@@ -135,8 +135,9 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
                 UIGrid Vis4 = new UIGrid(vis_dim, vis_dim, p.drawing_scaling_factor);
                 UIGrid Vis7 = new UIGrid(vis_dim, vis_dim, p.drawing_scaling_factor);
                 UIGrid Vis26 = new UIGrid(vis_dim, vis_dim, p.drawing_scaling_factor);
+                UIGrid VisCmb = new UIGrid(vis_dim, vis_dim, p.drawing_scaling_factor);
 
-                UIWindow win = (seed < save_max) ? CreateWindow(headless, Vis1, Vis2, Vis4, Vis7, Vis26) : null;
+                UIWindow win = (seed < save_max) ? CreateWindow(headless, Vis1, Vis2, Vis4, Vis7, Vis26, VisCmb) : null;
                 GifMaker smallGif = (seed < save_max) ? new GifMaker(foldername + "sim"+seed+".gif", 100, true) : null;
 
 
@@ -228,48 +229,35 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
             for (int y = 0; y < model.params.sideLen; y++) {
                 Cell c = model.GetAgent(x, y);
 
-                // Draw background as white if no cell
-                if (c == null) {
-                    visGattaca1.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca2.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca4.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca7.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca26.SetPix(x + 2, y + 2, Util.WHITE);
-                } else if (c.genome1 != null) {
-                    int color = HSBColor(c.genome1.h, c.genome1.v, c.genome1.s);
-                    visGattaca1.SetPix(x + 2, y + 2, color);
-                    visGattaca2.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca4.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca7.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca26.SetPix(x + 2, y + 2, Util.WHITE);
-                } else if (c.genome2 != null) {
-                    int color = HSBColor(c.genome2.h, c.genome2.v, c.genome2.s);
-                    visGattaca2.SetPix(x + 2, y + 2, color);
-                    visGattaca1.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca4.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca7.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca26.SetPix(x + 2, y + 2, Util.WHITE);
-                }else if (c.genome4 != null) {
-                    int color = HSBColor(c.genome4.h, c.genome4.v, c.genome4.s);
-                    visGattaca4.SetPix(x + 2, y + 2, color);
-                    visGattaca1.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca2.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca7.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca26.SetPix(x + 2, y + 2, Util.WHITE);
-                }else if (c.genome7 != null) {
-                    int color = HSBColor(c.genome7.h, c.genome7.v, c.genome7.s);
-                    visGattaca7.SetPix(x + 2, y + 2, color);
-                    visGattaca1.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca2.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca4.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca26.SetPix(x + 2, y + 2, Util.WHITE);
-                }else if (c.genome26 != null) {
-                    int color = HSBColor(c.genome26.h, c.genome26.v, c.genome26.s);
-                    visGattaca26.SetPix(x + 2, y + 2, color);
-                    visGattaca1.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca2.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca7.SetPix(x + 2, y + 2, Util.WHITE);
-                    visGattaca4.SetPix(x + 2, y + 2, Util.WHITE);
+                int drawX = x + 2;
+                int drawY = y + 2;
+
+
+                // Default all to white
+                visGattaca1.SetPix(drawX, drawY, Util.WHITE);
+                visGattaca2.SetPix(drawX, drawY, Util.WHITE);
+                visGattaca4.SetPix(drawX, drawY, Util.WHITE);
+                visGattaca7.SetPix(drawX, drawY, Util.WHITE);
+                visGattaca26.SetPix(drawX, drawY, Util.WHITE);
+                visComb.SetPix(drawX,drawY, Util.WHITE);
+
+                if (c != null) {
+                    if (c.genome1 != null) {
+                        visGattaca1.SetPix(drawX, drawY, HSBColor(c.genome1.h, c.genome1.s, c.genome1.v));
+                        visComb.SetPix(drawX, drawY, HSBColor(0.083, 0.941, 1.000));
+                    } else if (c.genome2 != null) {
+                        visGattaca2.SetPix(drawX, drawY, HSBColor(c.genome2.h, c.genome2.s, c.genome2.v));
+                        visComb.SetPix(drawX, drawY, HSBColor(0.333, 0.732, 0.627));
+                    } else if (c.genome4 != null) {
+                        visGattaca4.SetPix(drawX, drawY, HSBColor(c.genome4.h, c.genome4.s, c.genome4.v));
+                        visComb.SetPix(drawX, drawY, HSBColor(0.028, 0.451, 0.549));
+                    } else if (c.genome7 != null) {
+                        visGattaca7.SetPix(drawX, drawY, HSBColor(c.genome7.h, c.genome7.s, c.genome7.v));
+                        visComb.SetPix(drawX, drawY, HSBColor(0.583, 0.827, 0.706));
+                    } else if (c.genome26 != null) {
+                        visGattaca26.SetPix(drawX, drawY, HSBColor(c.genome26.h, c.genome26.s, c.genome26.v));
+                        visComb.SetPix(drawX, drawY, HSBColor(0.755, 0.459, 0.741));
+                    }
                 }
             }
         }
@@ -295,8 +283,8 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
         return String.format("#%02x%02x%02x", GetRed256(color), GetGreen256(color), GetBlue256(color));
     }
 
-public static UIWindow CreateWindow(boolean headless, UIGrid vis1, UIGrid vis2, UIGrid vis4, UIGrid vis7, UIGrid vis26) {
-    UIWindow win = (headless) ? null : new UIWindow("Gattaca1 & Gattaca2", false, null, true);
+public static UIWindow CreateWindow(boolean headless, UIGrid vis1, UIGrid vis2, UIGrid vis4, UIGrid vis7, UIGrid vis26, UIGrid visCmm) {
+    UIWindow win = (headless) ? null : new UIWindow("Gattaca1 & Gattaca2 & Gattaca4 & Gattaca7 & Gattaca26 & All together", false, null, true);
 
         if (!headless) {
             win.AddCol(0, vis1); // Column 0: Gattaca1 visualization
@@ -304,6 +292,7 @@ public static UIWindow CreateWindow(boolean headless, UIGrid vis1, UIGrid vis2, 
             win.AddCol(2, vis4);
             win.AddCol(3, vis7);
             win.AddCol(4, vis26);
+            win.AddCol(5, visCmm);
             win.RunGui();
         }
         return win;
