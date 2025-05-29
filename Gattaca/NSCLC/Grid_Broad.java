@@ -153,11 +153,11 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
                         System.out.println("Time: " + i + ", population: " + model.Pop());
 
 //                        Draw(model, Vis, i);
-                        Draw(model, Vis1, Vis2,Vis4,Vis7,Vis26, i);
+                        Draw(model, Vis1, Vis2,Vis4,Vis7,Vis26,VisCmb, i);
 
                         if (seed < save_max) {
                             smallGif.AddFrame(Vis1);
-                            Draw(model, Vis1, Vis2,Vis4,Vis7,Vis26, i);
+                            Draw(model, Vis1, Vis2,Vis4,Vis7,Vis26,VisCmb, i);
 
                         }
 
@@ -224,7 +224,7 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
     }
 
 
-    public static void Draw(Grid_Broad model, UIGrid visGattaca1, UIGrid visGattaca2, UIGrid visGattaca4, UIGrid visGattaca7, UIGrid visGattaca26, int time) {
+    public static void Draw(Grid_Broad model, UIGrid visGattaca1, UIGrid visGattaca2, UIGrid visGattaca4, UIGrid visGattaca7, UIGrid visGattaca26, UIGrid visComb, int time) {
         for (int x = 0; x < model.params.sideLen; x++) {
             for (int y = 0; y < model.params.sideLen; y++) {
                 Cell c = model.GetAgent(x, y);
