@@ -156,7 +156,7 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
                         Draw(model, Vis1, Vis2,Vis4,Vis7,Vis26,VisCmb, i);
 
                         if (seed < save_max) {
-                            smallGif.AddFrame(Vis1);
+                            smallGif.AddFrame(VisCmb);
                             Draw(model, Vis1, Vis2,Vis4,Vis7,Vis26,VisCmb, i);
 
                         }
@@ -283,7 +283,7 @@ public class Grid_Broad extends AgentGrid2D<Cell> {
         return String.format("#%02x%02x%02x", GetRed256(color), GetGreen256(color), GetBlue256(color));
     }
 
-public static UIWindow CreateWindow(boolean headless, UIGrid vis1, UIGrid vis2, UIGrid vis4, UIGrid vis7, UIGrid vis26, UIGrid visCmm) {
+    public static UIWindow CreateWindow(boolean headless, UIGrid vis1, UIGrid vis2, UIGrid vis4, UIGrid vis7, UIGrid vis26, UIGrid visCmm) {
     UIWindow win = (headless) ? null : new UIWindow("Gattaca1 & Gattaca2 & Gattaca4 & Gattaca7 & Gattaca26 & All together", false, null, true);
 
         if (!headless) {
