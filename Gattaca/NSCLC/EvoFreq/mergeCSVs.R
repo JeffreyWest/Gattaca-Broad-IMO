@@ -29,6 +29,18 @@ merge_muller_files <- function(file_paths) {
     df$CloneID <- old_to_new[as.character(df$CloneID)]
     df$ParentID <- ifelse(df$ParentID == 0, 0, old_to_new[as.character(df$ParentID)])
     
+    # if (grepl("g1", path)) {
+    #   df$Color <- "#FFC90F"
+    # } else if (grepl("g2", path)) {
+    #   df$Color <- "#2BA02B"
+    # } else if (grepl("g4", path)) {
+    #   df$Color <- "#8C6455"
+    # } else if (grepl("g7", path)) {
+    #   df$Color <- "#3E77B4" 
+    # } else if (grepl("g26", path)) {
+    #   df$Color <- "#8E67BD"
+    # }
+
     merged <- rbind(merged, df)
     
     offset <- max(df$CloneID) + 1  # Prepare next offset
